@@ -5,7 +5,7 @@ import pickle
 import numpy as np
 import ast
 
-# PAGE CONFIG (must be first) 
+
 st.set_page_config(
     page_title="AI Disease Prediction & Recommendation System",
     page_icon="🩺",
@@ -13,7 +13,7 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# LOAD RESOURCES 
+ 
 @st.cache_resource
 def load_resources():
     model      = pickle.load(open("model.pkl", "rb"))
@@ -33,9 +33,6 @@ def load_resources():
 
 model, desc, precaution, meds, diet, workout, features = load_resources()
 
-# in this we use css for better look
-# Uses components.html + window.parent to inject styles into Streamlit's
-# top-level document, bypassing Streamlit's <style> tag sanitisation.
 components.html("""
 <script>
 (function() {
@@ -182,12 +179,11 @@ components.html("""
 </script>
 """, height=0, scrolling=False)
 
-# SESSION STATE 
+
 for key in ["prediction", "confidence", "top3"]:
     if key not in st.session_state:
         st.session_state[key] = None
 
-#  HEADER
 st.markdown("""
 <div style="padding: 52px 0 36px; position: relative; z-index: 1;">
   <div style="display:flex; align-items:center; gap:10px; margin-bottom:16px;">
@@ -215,7 +211,7 @@ st.markdown("""
   margin-bottom:32px;"></div>
 """, unsafe_allow_html=True)
 
-# SYMPTOM INPUT 
+
 st.markdown("""
 <p style="font-family:'Syne',sans-serif; font-size:11px; letter-spacing:0.12em;
           text-transform:uppercase; color:rgba(16,185,95,0.7); margin-bottom:6px;">
@@ -233,7 +229,7 @@ selected_symptoms = st.multiselect(
 st.markdown("<div style='height:12px'></div>", unsafe_allow_html=True)
 predict_clicked = st.button("⚕  Analyse Symptoms", use_container_width=True)
 
-#RUN MODEL 
+ 
 if predict_clicked:
     if not selected_symptoms:
         st.markdown("""
@@ -262,7 +258,7 @@ if predict_clicked:
             st.session_state.confidence = confidence
             st.session_state.top3       = list(zip(top3_diseases, top3_probs))
 
-#RESULTS
+
 if st.session_state.prediction:
     disease = st.session_state.prediction.strip().lower()
     conf    = st.session_state.confidence
@@ -273,7 +269,7 @@ if st.session_state.prediction:
       transparent, rgba(16,185,95,0.2), transparent); margin-bottom:32px;"></div>""",
       unsafe_allow_html=True)
 
-    #Disease Banner
+    
     symp_count = len(selected_symptoms) if selected_symptoms else 0
     st.markdown(f"""
     <div style="position:relative; overflow:hidden; border-radius:20px;
@@ -308,7 +304,7 @@ if st.session_state.prediction:
     </div>
     """, unsafe_allow_html=True)
 
-    #  Top 3 Cards
+    
     rank_labels = ["🥇 Top match", "🥈 2nd likely", "🥉 3rd likely"]
     card_styles = [
         ("rgba(16,185,95,0.12)", "rgba(16,185,95,0.3)",   "#10B981"),
@@ -348,7 +344,7 @@ if st.session_state.prediction:
     </p>
     """, unsafe_allow_html=True)
 
-    # Tabs 
+    
     tab1, tab2, tab3, tab4, tab5 = st.tabs([
         "📋  Description", "🛡️  Precautions", "💊  Medications", "🥗  Diet", "🏃  Workout"
     ])
@@ -423,7 +419,7 @@ if st.session_state.prediction:
     </div>
     """, unsafe_allow_html=True)
 
-# FOOTER
+
 st.markdown("<div style='height:60px'></div>", unsafe_allow_html=True)
 st.markdown("""
 <div style="text-align:center;padding:20px 0;">
